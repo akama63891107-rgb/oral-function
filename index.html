@@ -2317,6 +2317,7 @@
         <span class="sub" id="pd-sub"></span>
         <div class="page-actions">
           <button class="btn" onclick="showPage('patients')">← 一覧に戻る</button>
+          <button class="btn" onclick="openPatientModal(currentPatient.id)">✏️ 患者情報を編集</button>
           <button class="btn" onclick="showTrends()">📈 推移グラフ</button>
           <button class="btn primary" onclick="startScreening()">スクリーニング開始</button>
         </div>
@@ -4070,6 +4071,7 @@ async function refreshPatients() {
       <td>${p.sex === 'm' ? '男' : p.sex === 'f' ? '女' : '-'}</td>
       <td class="actions">
         <button class="btn small" onclick="openPatient(${p.id})">詳細</button>
+        <button class="btn small" onclick="event.stopPropagation(); openPatientModal(${p.id})">編集</button>
       </td>
     </tr>`;
   }
@@ -4156,6 +4158,11 @@ async function savePatient() {
   closeModal('modal-patient');
   toast(editId ? '患者情報を更新しました' : '患者を登録しました');
   refreshPatients();
+  // 患者詳細を開いた状態で編集した場合は、その画面の表示も更新
+  if (editId && currentPatient && currentPatient.id === data.id &&
+      document.getElementById('page-patient-detail').classList.contains('active')) {
+    openPatient(data.id);
+  }
 }
 
 async function deletePatient(id) {
